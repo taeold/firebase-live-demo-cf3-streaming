@@ -90,13 +90,11 @@ function updateTimerDisplay(
   } else if (status === "running") {
     timerDiv.textContent = `TTFB: Measuring...`;
   } else {
-    // reset
     timerDiv.textContent = `TTFB: --- ms`;
   }
-}
+  }
 
-// --- Request Handler Functions ---
-async function handleNonStreamingRequest(promptText: string) {
+  async function handleNonStreamingRequest(promptText: string) {
   if (!promptText.trim()) {
     if (!streamingOpInProgress) setLoading(false);
     return;
@@ -150,7 +148,7 @@ async function handleStreamingRequest(promptText: string) {
   let streamedContent = "";
   streamingStartTime = performance.now();
   updateTimerDisplay(timerStreamingDiv, streamingStartTime, "running");
-  let firstChunkReceived = false; // Tracks if TTFB for stream has been recorded
+  let firstChunkReceived = false;
 
   try {
     const { stream: resultStream, data: dataPromise } =
@@ -187,15 +185,13 @@ async function handleStreamingRequest(promptText: string) {
   } finally {
     streamingOpInProgress = false;
     if (!nonStreamingOpInProgress) {
-      // Only re-enable buttons if the other process is also done
       setLoading(false);
     }
   }
 }
 
-// --- Event Listeners ---
 btnNonStreaming.addEventListener("click", () => {
-  if (nonStreamingOpInProgress || streamingOpInProgress) return; // Prevent multiple clicks if already running
+  if (nonStreamingOpInProgress || streamingOpInProgress) return;
   setLoading(true);
   handleNonStreamingRequest(userInputElement.value);
 });
@@ -221,7 +217,7 @@ btnImFeelingLucky.addEventListener("click", async () => {
   outputStreamingDiv.textContent = "(Preparing for dynamic paradigm shifts...)";
   updateTimerDisplay(timerStreamingDiv, undefined, "reset");
 
-  setLoading(true); // Disable all buttons at the start
+  setLoading(true);
 
   nonStreamingOpInProgress = false;
   streamingOpInProgress = false;
@@ -229,22 +225,16 @@ btnImFeelingLucky.addEventListener("click", async () => {
   const nonStreamingOp = handleNonStreamingRequest(luckyPrompt);
   const streamingOp = handleStreamingRequest(luckyPrompt);
 
-  // Await both operations to complete.
-  // The finally blocks within each handler will manage the setLoading(false) call
-  // when *both* are confirmed to be done.
   try {
     await Promise.allSettled([nonStreamingOp, streamingOp]);
   } catch (e) {
     console.warn(
-      "One or both 'I'm feeling lucky' operations encountered an issue.",
+      "One or both 'I\'m feeling lucky' operations encountered an issue.",
       e,
     );
   }
-  // Redundant setLoading(false) here might cause issues if one handler's finally block
-  // hasn't run yet. The individual handlers are better suited to manage this.
 });
 
-// --- Initial Checks (Optional) ---
 if (
   typeof generateCorpspeak !== "function" ||
   typeof (generateCorpspeak as any).stream !== "function"
