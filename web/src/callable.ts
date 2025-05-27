@@ -24,6 +24,6 @@ if (import.meta.env.DEV) {
 
 export const generateCorpspeak = httpsCallable<
   { prompt: string },
-  { completion: string },
+  { complete: string },
   { partial: string }
 >(functions, "generateCorpspeak");

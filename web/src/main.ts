@@ -92,9 +92,9 @@ function updateTimerDisplay(
   } else {
     timerDiv.textContent = `TTFB: --- ms`;
   }
-  }
+}
 
-  async function handleNonStreamingRequest(promptText: string) {
+async function handleNonStreamingRequest(promptText: string) {
   if (!promptText.trim()) {
     if (!streamingOpInProgress) setLoading(false);
     return;
@@ -116,7 +116,7 @@ function updateTimerDisplay(
         "stopped",
       );
     }
-    outputNonStreamingDiv.textContent = result.data.completion;
+    outputNonStreamingDiv.textContent = result.data.complete;
   } catch (error: any) {
     if (nonStreamingOpInProgress) {
       updateTimerDisplay(
@@ -175,7 +175,7 @@ async function handleStreamingRequest(promptText: string) {
 
     const finalResult = await dataPromise;
     outputStreamingDiv.textContent =
-      streamedContent.trim() + `\n(Final object: ${finalResult.completion})`;
+      streamedContent.trim() + `\n(Final object: ${finalResult.complete})`;
   } catch (error: any) {
     if (!firstChunkReceived && streamingOpInProgress) {
       updateTimerDisplay(timerStreamingDiv, streamingStartTime, "stopped");
